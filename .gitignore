@@ -1,1 +1,13 @@
 *.a
+*.swp
+*.swo
+
+.vscode/
+.vscode-workspace/
+*.tmp
+*.temp
+
+*.log
+*.tmp
+*.bak
+*.out
