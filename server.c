@@ -6,7 +6,7 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:11:16 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/10 00:55:54 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/10 00:57:50 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int main()
 	c = 0;
 	ft_memset(g_sstr, 0, sizeof(g_sstr));
 	printf("Server PID %d\n", sv_pid);
-	signal(SIGUSR1, siguser1_handler);
+	signal(SIGUSR1, sigusr1_handler);
 	kill(sv_pid,SIGUSR1);
 	if (kill(sv_pid, SIGUSR1) == -1)
 	{
