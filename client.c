@@ -6,36 +6,37 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:50:45 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/10 17:31:40 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/11 00:04:51 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minitalk.h>
+#include "minitalk.h"
 
 
-void	send_bit(int sv_pid, int bit)
-{
-	if (bit == 1)
-		kill(sv_pid, SIGUSR1);
-	else
-		kill(sv_pid, SIGUSR2);
-	usleep(42);
-}
-
-void	send_char(int sv_pid, char ch)
+int	ft_send_len(int sv_pid, char *str)
 {
 	int	i;
-	int	bit;
+	size_t	len;
 	
-	i = 8;
-	while (i > 0)
+	i = 0;
+	len = ft_strlen(str);
+	if (len >= MAX_LEN)
 	{
-		bit = (ch >> i) & 1;
-		send_bit(sv_pid, bit);
-		i--;
+		ft_printf("Too long message");
+		return (0);
 	}
-	
+	while (i < 32)
+	{
+		if ((len >> i) & 1)
+			kill(sv_pid, SIGUSR2);
+		else
+			kill(sv_pid, SIGUSR1);
+		usleep(100);
+		i++;
+	}
+	return(1);
 }
+
 
 void	ft_send_str(int sv_pid, char *str)
 {
@@ -50,12 +51,14 @@ void	ft_send_str(int sv_pid, char *str)
 		i = 0;
 		while(i < 8)
 		{
-			kill(sv_pid, SIGUSR1 + (1 & (c >> i)));
-			usleep (50);
+			if ((c >> i) & 1)
+				kill(sv_pid, SIGUSR2);
+			else
+				kill(sv_pid, SIGUSR1);
+			usleep (100);
 			i++;
 		} 
 		j++;
-		
 	}
 }
 
@@ -82,7 +85,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		ft_printf("")
+		ft_printf("hello")
 	}
 	return(0);
 }
