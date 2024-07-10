@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 18:09:16 by psitkin           #+#    #+#             */
-/*   Updated: 2023/12/27 17:41:14 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/10 23:58:02 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,7 @@
 # include <stdlib.h>
 # include <stdarg.h>
 
-typedef struct t_list
-{
-	int	length;
-	int	error;
-}		t_list;
+
 
 int		ft_printf(const char *format, ...);
 void	print_format(char spec, va_list ap, t_list *ret);
