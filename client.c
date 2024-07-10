@@ -6,7 +6,7 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:50:45 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/10 00:30:21 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/10 17:31:40 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,28 @@ void	send_char(int sv_pid, char ch)
 	
 }
 
+void	ft_send_str(int sv_pid, char *str)
+{
+	int	i;
+	int	c;
+	int j;
+	
+	j = 0;
+	while (str[j])
+	{
+		c = str[j];
+		i = 0;
+		while(i < 8)
+		{
+			kill(sv_pid, SIGUSR1 + (1 & (c >> i)));
+			usleep (50);
+			i++;
+		} 
+		j++;
+		
+	}
+}
+
 int main(int argc, char **argv)
 {
 	pid_t	sv_pid;
@@ -48,13 +70,19 @@ int main(int argc, char **argv)
 	if (argc == 3)
 	{
 		sv_pid = ft_atoi(argv[1]);
-		while (argv[2][i])
+		if (sv_pid <= 0)
 		{
-			send_char(sv_pid, argv[2][1]);
-			i++;
+			ft_putstr_fd("invalid PID: ", 2);
+			ft_putstr_fd(argv[1], 2);
+			exit(1);
 		}
+		if (!ft_send_str_len(sv_pid, argv[2]))
+			exit (0);
+		ft_send_str(sv_pid, argv[2]);
 	}
 	else
-		exit(1);
+	{
+		ft_printf("")
+	}
 	return(0);
 }
