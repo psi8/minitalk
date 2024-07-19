@@ -1,57 +1,48 @@
-.DEFAULT_GOAL := all
-.SUFFIXES:
+CLIENT_NAME = client
+SERVER_NAME = server
 
-CC := CC
-CFLAGS := -Wall -Wextra -Werror -MMD -MP
-CFLAGS := -I./include/ -I./libft/include
-libft_dir := ./libft/
-libft := $(libft_dir) -lft
-LDFLAGS := -L$(libft_dir) -lft
+C_SOURCE = client.c
+S_SOURCE = server.c
 
-applications := client server
-src_dir := ./src
-obj_dir := ./obj
-client_sources := client.c 
-client_objects := $(client_sources:%.c=$(obj_dir)/%.o)
-server_sources := server.c
-server_objects := $(server_sources:%.c=$(obj_dir)/%.o)
+C_OBJECT = $(C_SOURCE:.c=.o)
+S_OBJECT = $(S_SOURCE:.c=.o)
 
-$(libft):
-	$(MAKE)  -C $(libft_dir)
+LIBFT_DIR = libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
-$(obj_dir)/%.o: $(src_dir)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+PRINTF_DIR = printf
+PRINTF = $(PRINTF_DIR)/libftprintf.a
 
-client: $(libft) $(client_objects)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(client_objects) -o $@
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
-server: $(libft) $(server_objects)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(server_objects) -o $@ 
+all: $(CLIENT_NAME) $(SERVER_NAME)
 
-.PHONY: all
-all: $(applications)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: bonus
-bonus: $(applications)
+$(CLIENT_NAME): $(C_OBJECT)
+	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C $(PRINTF_DIR)
+	$(CC) $(CFLAGS) $(C_OBJECT) $(LIBFT) $(PRINTF) -o $(CLIENT_NAME)
+	@echo client made
 
-.PHONY: clean
+$(SERVER_NAME): $(S_OBJECT)
+	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C $(PRINTF_DIR)
+	$(CC) $(CFLAGS) $(S_OBJECT) $(LIBFT) $(PRINTF) -o $(SERVER_NAME)
+	@echo server made
+
 clean:
-	$(RM) $(client_objects) $(server_objects)
-	$(RM) $(client_objects:.o=.d) $(server_objects:.o=.d)
-	@rmdir $(obj_dir) 2> /dev/null || true
-	$(MAKE) -C $(libft_dir) clean
+	rm -f $(C_OBJECT) $(S_OBJECT)
+	$(MAKE) clean -C $(LIBFT_DIR)
+	$(MAKE) clean -C $(PRINTF_DIR)
 
-.PHONY: fclean
 fclean: clean
-	$(RM) $(applications)
-	$(MAKE) -C $(libft_dir) fclean
+	rm -f $(CLIENT_NAME) $(SERVER_NAME)
+	$(MAKE) fclean -C $(LIBFT_DIR)
+	$(MAKE) fclean -C $(PRINTF_DIR)
 
-.PHONY: re
 re: fclean all
 
-.PHONY: debug
-debug: CFLAGS += -g -fsanitize=address -fsanitize=undefined
-debug: all
-
--include $(client_objects:.o=.d) $(server_objects:.o=.d)
+.PHONY: clean fclean all re

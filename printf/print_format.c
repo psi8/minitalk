@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   print_format.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 18:33:40 by psitkin           #+#    #+#             */
-/*   Updated: 2023/12/27 17:41:57 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/19 18:35:33 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	print_format(char specifier, va_list ap, t_list *ret)
+void	print_format(char specifier, va_list ap, t_printf_list *ret)
 {
 	if (specifier == 'c')
 		print_char(va_arg(ap, int), ret);

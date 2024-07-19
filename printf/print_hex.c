@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_ptr.c                                        :+:      :+:    :+:   */
+/*   print_hex.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/22 21:58:25 by psitkin           #+#    #+#             */
-/*   Updated: 2023/12/27 18:27:34 by psitkin          ###   ########.fr       */
+/*   Created: 2023/12/22 21:44:03 by psitkin           #+#    #+#             */
+/*   Updated: 2024/07/19 18:33:48 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	print_ptr(unsigned long nbr, t_list *ret)
+void	print_hex(long nbr, int upper_case, t_printf_list *ret)
 {
-	char	*digits;
+	char	*lower;
+	char	*upper;
 
-	digits = "0123456789abcdef";
+	lower = "0123456789abcdef";
+	upper = "0123456789ABCDEF";
 	if (nbr >= 16)
 	{
-		print_ptr(nbr / 16, ret);
+		print_hex(nbr / 16, upper_case, ret);
 		nbr = nbr % 16;
 	}
-	print_char(digits[nbr], ret);
+	if (upper_case)
+		print_char(upper[nbr], ret);
+	else
+		print_char(lower[nbr], ret);
 }

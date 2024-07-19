@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_char.c                                       :+:      :+:    :+:   */
+/*   print_dec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/18 17:56:11 by psitkin           #+#    #+#             */
-/*   Updated: 2023/12/27 17:58:41 by psitkin          ###   ########.fr       */
+/*   Created: 2023/12/22 21:08:05 by psitkin           #+#    #+#             */
+/*   Updated: 2024/07/19 18:33:39 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	print_char(int c, t_list *ret)
+void	print_dec(long nbr, t_printf_list *ret)
 {
-	if (ret->error == -1)
-		return ;
-	if (write(1, &c, 1) < 0)
-		ret->error = -1;
-	else
-		ret->length += 1;
+	if (nbr < 0)
+	{
+		print_char('-', ret);
+		nbr = -nbr;
+	}
+	if (nbr >= 10)
+	{
+		print_dec(nbr / 10, ret);
+		nbr = nbr % 10;
+	}
+	print_char(nbr + '0', ret);
 }

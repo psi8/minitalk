@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 19:06:22 by psitkin           #+#    #+#             */
-/*   Updated: 2023/12/27 18:27:24 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/19 18:28:05 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_printf(const char *format, ...)
 {
 	va_list		ap;
-	t_list		ret;
+	t_printf_list		ret;
 	int			i;
 
 	ret.length = 0;

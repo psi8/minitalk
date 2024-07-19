@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psitkin <psitkin@hive.student.fi>          +#+  +:+       +#+        */
+/*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 21:39:50 by psitkin           #+#    #+#             */
-/*   Updated: 2023/11/16 00:52:59 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/19 17:25:46 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,14 @@
 
 void	*ft_calloc(size_t count, size_t size)
 {
-	void	*p;
+	size_t		total_size;
+	void		*ptr;
 
-	if (count && size > SIZE_MAX / count)
-		return (0);
-	if (size && count > SIZE_MAX / size)
-		return (0);
-	p = malloc(count * size);
-	if (!p)
-		return (0);
-	ft_bzero(p, count * size);
-	return (p);
+	total_size = count * size;
+	if (total_size < count && total_size < size)
+		return (NULL);
+	ptr = malloc(total_size);
+	if (ptr)
+		ft_bzero(ptr, total_size);
+	return (ptr);
 }
