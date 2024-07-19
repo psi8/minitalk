@@ -6,103 +6,74 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:11:16 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/10 23:36:51 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/18 21:16:03 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	ft_get_mes(char *msg, int sig, int len)
+char	*add_to_string(char const *s1, char const letter)
 {
-	static int	c;
-	static int	i;
-	static int	bit_pos;
+	int		i;
+	int		j;
+	char	*tab;
 
-	c = 0;
 	i = 0;
-	bit_pos = 0;
-	
-	if (sig == SIGUSR1)
-		c = c | (0 << bit_pos);
-	else if (sig == SIGUSR2)
-		c |= (1 << bit_pos);
-	
-	bit_pos++;
-	
-	if(bit_pos == 8)
-	{
-		msg[i] = c;
-		i++;
-		c = 0;
-		bit_pos = 0;
-	
-		if(i == len)
-		{
-			i = 0;
-			return(1);
-		}
-	}
-	else
-		return(0);
+	j = 0;
+	tab = malloc((ft_strlen(s1) + 2) * sizeof(char));
+	if (!tab)
+		return (NULL);
+	while (s1[i])
+		tab[j++] = s1[i++];
+	i = 0;
+	tab[j++] = letter;
+	tab[j] = 0;
+	free ((void *)(s1));
+	return (tab);
 }
 
-void	ft_get_string(int sig, siginfo_t *info, void *context)
+void	print_and_free(char **string)
 {
-	static char	*msg;
-	static size_t	len;
-	static int	bit_pos;
-
-	msg = NULL;
-	len = 0;
-	bit_pos = 0;
-	(void)context;
-	
-	if(len)
-	{
-		if (sig == SIGUSR1)
-			len |= (0 << bit_pos);
-		else if (sig == SIGUSR2)
-			len |= (1 << bit_pos);
-		bit_pos++;
-
-		if (bit_pos == 32)
-		{
-			msg = malloc(len + 1);
-			if (msg == NULL)
-			{
-				write(2, "Memory allocation failed\n", 25);
-				exit(1);
-			}
-			bit_pos = 0;
-		}
-	}
-	else
-	{
-		if (ft_get_mes(msg, sig, len))
-		{
-			msg[len] = '\0';
-			write(1, msg, len);
-			write(1, "\n", 1);
-			free(msg);
-			msg = NULL;
-			len = 0;
-		}
-	}
+	ft_printf("%s\n", *string);
+	free (*string);
+	*string = NULL;
 }
 
+void	signal_handler(int sig)
+{
+	static int	bit_pos = 0;
+	static int	char_val = 0;
+	static int	len = 0;
+	static char	*string;
+
+	if (!string)
+		string = ft_strdup("");
+	if (sig == SIGUSR2)
+		char_val = ((char_val << 1) | 1);
+	else if (sig == SIGUSR1)
+		char_val = (char_val << 1);
+	bit_pos++;
+	if (bit_pos == 8)
+	{
+		string = add_to_string(string, char_val);
+		if (char_val == '\0')
+			print_and_free(&string);
+		bit_pos = 0;
+		char_val = 0;
+		len += 1;
+	}
+}
 
 int	main(void)
 {
 	struct sigaction	sa;
 
-	sa.sa_flags = SA_SIGINFO;
-	sa.sa_sigaction = &ft_get_string;
-	ft_printf("server PID: %d\n", getpid());
+	ft_printf("Server PID: %d\n", getpid());
+	sa.sa_handler = signal_handler;
+	sa.sa_flags = 0;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-	while(1)
-	{
+	while (1)
 		pause();
-	}
-	return(0);
+	return (0);
 }

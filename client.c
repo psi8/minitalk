@@ -6,7 +6,7 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:50:45 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/19 17:08:09 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/19 17:29:17 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	error_and_exit(int err)
 	if(err == 5)
 		ft_printf("Error: Use format: ./client <PID_SERVER> <\"STRING\">\n");
 	if(err == 6)
-		ft_printf("Kill fail \n")
+		ft_printf("Kill fail \n");
 	exit(0);
 }
 
