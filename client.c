@@ -6,86 +6,78 @@
 /*   By: psitkin <psitkin@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:50:45 by psitkin           #+#    #+#             */
-/*   Updated: 2024/07/11 00:04:51 by psitkin          ###   ########.fr       */
+/*   Updated: 2024/07/19 17:08:09 by psitkin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
 
-int	ft_send_len(int sv_pid, char *str)
+void	error_and_exit(int err)
 {
-	int	i;
-	size_t	len;
-	
-	i = 0;
-	len = ft_strlen(str);
-	if (len >= MAX_LEN)
-	{
-		ft_printf("Too long message");
-		return (0);
-	}
-	while (i < 32)
-	{
-		if ((len >> i) & 1)
-			kill(sv_pid, SIGUSR2);
-		else
-			kill(sv_pid, SIGUSR1);
-		usleep(100);
-		i++;
-	}
-	return(1);
+	if(err == 1)
+		ft_printf("Error : No server id\n");
+	if(err == 2)
+		ft_printf("Error: No string provided\n");
+	if(err == 3)
+		ft_printf("Error: Incorrect PID\n");
+	if(err == 4)
+		ft_printf("Error: No message recieved\n");
+	if(err == 5)
+		ft_printf("Error: Use format: ./client <PID_SERVER> <\"STRING\">\n");
+	if(err == 6)
+		ft_printf("Kill fail \n")
+	exit(0);
 }
 
 
-void	ft_send_str(int sv_pid, char *str)
+void	send_sig(int pid, char *string)
 {
-	int	i;
-	int	c;
-	int j;
-	
-	j = 0;
-	while (str[j])
+	int	string_pos;
+	int	bit_pos;
+
+	string_pos = 0;
+	while (string[string_pos])
 	{
-		c = str[j];
-		i = 0;
-		while(i < 8)
+		bit_pos = 0;
+		while (bit_pos < 8)
 		{
-			if ((c >> i) & 1)
-				kill(sv_pid, SIGUSR2);
+			if (((unsigned char)(string[string_pos] >> (7 - bit_pos)) & 1) == 0)
+				kill(pid, SIGUSR1);
 			else
-				kill(sv_pid, SIGUSR1);
-			usleep (100);
-			i++;
-		} 
-		j++;
+				kill(pid, SIGUSR2);
+			usleep(200);
+			bit_pos++;
+		}
+		string_pos++;
+	}
+	bit_pos = 0;
+	while (bit_pos < 8)
+	{
+		kill(pid, SIGUSR1);
+		usleep(200);
+		bit_pos++;
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	pid_t	sv_pid;
+	char				*string;
+	int					server_id;
 
-	int	i;
-	
-	i = 0;
-	
 	if (argc == 3)
 	{
-		sv_pid = ft_atoi(argv[1]);
-		if (sv_pid <= 0)
-		{
-			ft_putstr_fd("invalid PID: ", 2);
-			ft_putstr_fd(argv[1], 2);
-			exit(1);
-		}
-		if (!ft_send_str_len(sv_pid, argv[2]))
-			exit (0);
-		ft_send_str(sv_pid, argv[2]);
+		server_id = ft_atoi(argv[1]);
+		if (!server_id)
+			error_and_exit(1);
+		if (kill(server_id, 0) == -1)
+			error_and_exit(3);
+		string = argv[2];
+		if (string[0] == 0)
+			error_and_exit(2);
+		send_sig(server_id, string);
 	}
 	else
-	{
-		ft_printf("hello")
-	}
-	return(0);
+		error_and_exit(5);
+	return (EXIT_SUCCESS);
 }
